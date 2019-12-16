@@ -2,12 +2,12 @@
 
 Controller::Controller()
 {
-
+    auth = new Auth();
 }
 
 Controller::~Controller()
 {
-
+    delete auth;
 }
 
 void Controller::receiveMessage(json j)
@@ -32,10 +32,32 @@ void Controller::receiveMessage(json j)
 
     //printf("result: %s\n", content["password"].get<std::string>().c_str());
     if (field == "register") {
-
+        int result = auth->regis(content["username"], content["password"]);
+        switch(result) {
+            case 0:
+            {
+                printf("register successfully.");
+                break;
+            }
+            case -1:
+            {
+                break;
+            }
+        }
     }
     else if (field == "login") {
-
+        int result = auth->login(content["username"], content["password"]);
+        switch(result) {
+            case 0:
+            {
+                printf("login successfully.");
+                break;
+            }
+            case -1:
+            {
+                break;
+            }
+        }
     }
     else {
         // default

@@ -43,5 +43,5 @@ public:
      * @param sql
      * @return
      */
-    bool exeSQL(string sql);
+    MYSQL_RES* exeSQL(string sql);
 };

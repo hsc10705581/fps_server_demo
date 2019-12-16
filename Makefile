@@ -1,7 +1,7 @@
 all: server
 
-server: main.o epoll_server.o controller.o
-	g++ -o server main.o epoll_server.o controller.o -lz -lcrypt
+server: main.o epoll_server.o controller.o auth.o database.o
+	g++ -o server main.o epoll_server.o controller.o auth.o database.o -lz -lcrypt
 
 main.o: main.cpp
 	g++ -c -Wall -std=c++11 main.cpp epoll_server.h
@@ -14,6 +14,9 @@ controller.o: controller.cpp
 
 vector3.o: vector3.cpp
 	g++ -c -Wall -std=c++11 vector3.cpp common.h
+
+auth.o: auth.cpp
+	g++ -c -Wall -std=c++11 auth.cpp auth.h
 
 database.o: database.cpp
 	g++ -c -Wall -std=c++11 database.cpp database.h

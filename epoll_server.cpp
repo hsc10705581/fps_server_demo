@@ -34,7 +34,7 @@ EpollServer::EpollServer()
 
 EpollServer::~EpollServer()
 {
-    
+    delete controller;
 }
 
 bool EpollServer::mainloop()

@@ -8,11 +8,13 @@ class Auth
 private:
     string search_user_sql;
     string insert_user_sql;
+    string exist_sql;
     Database * user_db;
+    bool isExist(string username);
 
 public:
     Auth();
     ~Auth();
-    bool regis(string username, string password);
-    bool login(string username, string password);
+    int regis(string username, string password);
+    int login(string username, string password);
 };
