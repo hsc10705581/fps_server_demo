@@ -15,5 +15,8 @@ controller.o: controller.cpp
 vector3.o: vector3.cpp
 	g++ -c -Wall -std=c++11 vector3.cpp common.h
 
+database.o: database.cpp
+	g++ -c -Wall -std=c++11 database.cpp database.h
+
 clean:
-	rm *.o
+	rm *.o rm *.h.gch
