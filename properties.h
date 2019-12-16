@@ -12,3 +12,5 @@
 
 //message buffer size
 #define BUF_SIZE 0xFFFF
+
+#define SERVER_WELCOME "Welcome you join  to the chat room! Your chat ID is: Client #%d"
