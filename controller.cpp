@@ -3,14 +3,16 @@
 Controller::Controller()
 {
     auth = new Auth();
+    sender = new Sender();
 }
 
 Controller::~Controller()
 {
     delete auth;
+    delete sender;
 }
 
-void Controller::receiveMessage(json j)
+void Controller::receiveMessage(int clientfd, json j)
 {
     //printf("result: %s\n", j["test"].get<std::string>().c_str());
     std::string field;
@@ -32,32 +34,16 @@ void Controller::receiveMessage(json j)
 
     //printf("result: %s\n", content["password"].get<std::string>().c_str());
     if (field == "register") {
-        int result = auth->regis(content["username"], content["password"]);
-        switch(result) {
-            case 0:
-            {
-                printf("register successfully.");
-                break;
-            }
-            case -1:
-            {
-                break;
-            }
-        }
+        std::string username = content["username"].get<std::string>();
+        std::string password = content["password"].get<std::string>();
+        int status = auth->regis(username, password);
+        this->sender->registerSender(clientfd, status);
     }
     else if (field == "login") {
-        int result = auth->login(content["username"], content["password"]);
-        switch(result) {
-            case 0:
-            {
-                printf("login successfully.");
-                break;
-            }
-            case -1:
-            {
-                break;
-            }
-        }
+        std::string username = content["username"].get<std::string>();
+        std::string password = content["password"].get<std::string>();
+        int status = auth->login(username, password);
+        this->sender->loginSender(clientfd, status);
     }
     else {
         // default

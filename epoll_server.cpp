@@ -75,6 +75,7 @@ bool EpollServer::mainloop()
             char message[BUF_SIZE];
             bzero(message, BUF_SIZE);
             sprintf(message, SERVER_WELCOME, clientfd);
+            //printf("send message: %s\n", message);
             int ret = send(clientfd, message, BUF_SIZE, 0);
             if(ret < 0) { perror("send error"); exit(-1); }
         }
@@ -128,7 +129,7 @@ int EpollServer::receiveMessageHandler(int clientfd)
     // receive message
     printf("read from client(clientID = %d)\n", clientfd);
     int len = recv(clientfd, buf, BUF_SIZE, 0);
-    json j = json::parse(buf);
+    
 
     if(len == 0)  // len = 0 means the client closed connection
     {
@@ -140,8 +141,8 @@ int EpollServer::receiveMessageHandler(int clientfd)
     }
     else  //broadcast message
     {
-        this->controller->receiveMessage(j);
-
+        json j = json::parse(buf);
+        this->controller->receiveMessage(clientfd, j);
         // list<int>::iterator it;
         // for(it = clients_list.begin(); it != clients_list.end(); ++it) {
         //    if(*it != clientfd){

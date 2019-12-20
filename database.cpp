@@ -21,7 +21,7 @@ bool Database::initDB(string host, string user,string pwd,string db_name, int po
 {
     mysql = mysql_real_connect(mysql, host.c_str(), user.c_str(), pwd.c_str(), db_name.c_str(), port, NULL, 0);
     if(!mysql) {
-        cout << "Error: " << mysql_error(mysql);
+        cout << "Error: " << mysql_error(mysql) << endl;
         exit(1);
     }
     return true;

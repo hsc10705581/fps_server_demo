@@ -3,7 +3,7 @@
 Auth::Auth()
 {
     user_db = new Database();
-    user_db->initDB("127.0.0.1", "mangos", "mangos", "logs", 3306);
+    user_db->initDB("localhost", "mangos", "mangos", "logs", 3306);
     search_user_sql = "select password from fps_user where username=\"%s\"";
     insert_user_sql = "insert into fps_user (username, password) VALUES (\"%s\", \"%s\")";
     exist_sql = "select * from fps_user where username=\"%s\"";
@@ -22,7 +22,7 @@ int Auth::regis(string username, string password)
     }
     else {
         char sql[insert_user_sql.length()];
-        sprintf(sql, insert_user_sql.c_str(), username, password);
+        sprintf(sql, insert_user_sql.c_str(), username.c_str(), password.c_str());
         MYSQL_RES* result = user_db->exeSQL(sql);
         if (result) {
             // error
@@ -38,16 +38,17 @@ int Auth::login(string username, string password)
 {
     if (this->isExist(username)) {
         char sql[search_user_sql.length()];
-        sprintf(sql, search_user_sql.c_str(), username);
+        sprintf(sql, search_user_sql.c_str(), username.c_str());
         MYSQL_RES* result = user_db->exeSQL(sql);
         if (result) {
-            int num_fields = mysql_num_fields(result);
+            //int num_fields = mysql_num_fields(result);
             MYSQL_ROW row = mysql_fetch_row(result);
+            std::string row_pw(row[0]);
             if (!row) {
                 // 用户不存在，无法登录
                 return -1;
             }
-            if (row[0] == password) {
+            else if (password == row_pw) {
                 // 登陆成功
                 return 0;
             }
@@ -70,7 +71,7 @@ int Auth::login(string username, string password)
 bool Auth::isExist(string username)
 {
     char sql[exist_sql.length()];
-    sprintf(sql, exist_sql.c_str(), username);
+    sprintf(sql, exist_sql.c_str(), username.c_str());
     MYSQL_RES* result = user_db->exeSQL(sql);
     if (result) {
         unsigned long long  num_rows = mysql_num_rows(result);
