@@ -33,7 +33,8 @@ private:
 public:
     EpollServer();
     ~EpollServer();
-    bool mainloop(); // false报错, true无错
+    bool mainloop(sem_t mutex); // false报错, true无错
+    bool sendloop(sem_t mutex); // false报错, true无错
     void addfd( int epollfd, int fd, bool enable_et );
     int getEpfd();
     int getListener();

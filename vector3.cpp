@@ -106,3 +106,12 @@ void Vector3::printVec3()
 {
 	//std::cout << "(" << x << ", " << y << ", " << z << ")" << std::endl;
 }
+
+json Vector3::toJson()
+{
+	json ret;
+	ret["x"] = x;
+	ret["y"] = y;
+	ret["z"] = z;
+	return ret;
+}

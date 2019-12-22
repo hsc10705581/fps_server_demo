@@ -1,5 +1,10 @@
 #include <stdio.h>
 #include <math.h>
+#include <semaphore.h>
+
+#include "nlohmann/json.hpp"
+
+using namespace nlohmann;
 
 class Vector3
 {
@@ -23,4 +28,5 @@ public:
 	void normalize();
 	Vector3 crossProduct(const Vector3 &v);
 	void printVec3();
+	json toJson();
 };

@@ -16,10 +16,12 @@ using namespace nlohmann;
 class Sender
 {
 private:
+    void jsonSender(int clientfd, json j);
 
 public:
     Sender();
     ~Sender();
     void registerSender(int clientfd, int status);
     void loginSender(int clientfd, int status);
+    void playerValueSender(int clientfd, json players, int count);
 };

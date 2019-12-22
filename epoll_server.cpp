@@ -37,7 +37,7 @@ EpollServer::~EpollServer()
     delete controller;
 }
 
-bool EpollServer::mainloop()
+bool EpollServer::mainloop(sem_t mutex)
 {
     //epoll_events_count表示就绪事件的数目
     int epoll_events_count = epoll_wait(this->epfd, this->events, EPOLL_SIZE, -1);
@@ -76,17 +76,25 @@ bool EpollServer::mainloop()
             bzero(message, BUF_SIZE);
             sprintf(message, SERVER_WELCOME, clientfd);
             //printf("send message: %s\n", message);
-            int ret = send(clientfd, message, BUF_SIZE, 0);
-            if(ret < 0) { perror("send error"); exit(-1); }
+            //int ret = send(clientfd, message, BUF_SIZE, 0);
+            send(clientfd, message, BUF_SIZE, 0);
+            //if(ret < 0) { perror("send error"); exit(-1); }
         }
         //客户端唤醒//处理用户发来的消息，并广播，使其他用户收到信息
         else
         {
+            sem_wait(&mutex);
             int ret = this->receiveMessageHandler(sockfd);
+            sem_post(&mutex);
             if(ret < 0) { perror("error");exit(-1); }
         }
     }
     return true;
+}
+
+bool EpollServer::sendloop(sem_t mutex)
+{
+    return this->controller->sendloop();
 }
 
 /**
