@@ -34,10 +34,8 @@ void *sendThread(void *vargp)
     printf("send loop begin\n");
     while(1)
     {
-        sem_wait(&mutex);
         if (!server->sendloop(mutex))
             break;
-        sem_post(&mutex);
     }
     printf("send loop end\n");
     return NULL;

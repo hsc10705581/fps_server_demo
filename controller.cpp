@@ -13,7 +13,7 @@ Controller::~Controller()
     delete sender;
 }
 
-bool Controller::sendloop()
+bool Controller::sendloop(sem_t mutex)
 {
     //sleep(1);
     time_t timer = time(0);
@@ -26,6 +26,7 @@ bool Controller::sendloop()
     }
     sendloopCount++;
     //printf("sendloop count: %d\n", sendloopCount);
+    sem_wait(&mutex);
     json players = this->playerMap2Json();
     list<int>::iterator itor = clientList.begin();
     while (itor != clientList.end()) {
@@ -33,6 +34,7 @@ bool Controller::sendloop()
         itor++;
         this->sender->playerValueSender(*itor, players, sendloopCount);
     }
+    sem_post(&mutex);
     return true;
 }
 

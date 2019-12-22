@@ -31,7 +31,7 @@ private:
 public:
     Controller();
     ~Controller();
-    bool sendloop(); // 向所有client发送数据
+    bool sendloop(sem_t mutex); // 向所有client发送数据
     void receiveMessage(int clientfd, json j);
     void clientConnected(int clientfd);
     void clientClosed(int clientfd);

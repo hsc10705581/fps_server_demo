@@ -94,7 +94,7 @@ bool EpollServer::mainloop(sem_t mutex)
 
 bool EpollServer::sendloop(sem_t mutex)
 {
-    return this->controller->sendloop();
+    return this->controller->sendloop(mutex);
 }
 
 /**
