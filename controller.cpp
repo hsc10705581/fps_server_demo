@@ -94,6 +94,7 @@ json Controller::playerMap2Json()
     map<int, Player *>::iterator iter = playerMap.begin();
     while (iter != playerMap.end()) {
         ret.push_back(iter->second->toJson());
+        iter++;
     }
     return ret;
 }

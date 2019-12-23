@@ -83,9 +83,9 @@ bool EpollServer::mainloop(sem_t mutex)
         //客户端唤醒//处理用户发来的消息，并广播，使其他用户收到信息
         else
         {
-            sem_wait(&mutex);
+            printf("receiver wait lock\n");
             int ret = this->receiveMessageHandler(sockfd);
-            sem_post(&mutex);
+            printf("receiver release lock\n");
             if(ret < 0) { perror("error");exit(-1); }
         }
     }
