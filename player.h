@@ -15,5 +15,8 @@ public:
     ~Player();
     void setPosition(Vector3 posi);
     void setRotation(Vector3 rota);
+    float getHp();
+    void setHp(float hp);
     json toJson();
+    json toJson(int id);
 };

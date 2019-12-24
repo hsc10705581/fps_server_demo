@@ -25,11 +25,44 @@ void Player::setRotation(Vector3 rota)
     rotation = rota;
 }
 
+float Player::getHp()
+{
+    return this->hp;
+}
+
+void Player::setHp(float hp)
+{
+    this->hp = hp;
+}
+
 json Player::toJson()
 {
     json ret;
-    ret["position"] = this->position.toJson();
-    ret["rotation"] = this->rotation.toJson();
+    json position = this->position.toJson();
+    json rotation = this->rotation.toJson();
+    ret["position_x"] = position["x"];
+    ret["position_y"] = position["y"];
+    ret["position_z"] = position["z"];
+    ret["rotation_x"] = rotation["x"];
+    ret["rotation_y"] = rotation["y"];
+    ret["rotation_z"] = rotation["z"];
     ret["hp"] = hp;
     return ret;
 }
+
+json Player::toJson(int id)
+{
+    json ret;
+    json position = this->position.toJson();
+    json rotation = this->rotation.toJson();
+    ret["position_x"] = position["x"];
+    ret["position_y"] = position["y"];
+    ret["position_z"] = position["z"];
+    ret["rotation_x"] = rotation["x"];
+    ret["rotation_y"] = rotation["y"];
+    ret["rotation_z"] = rotation["z"];
+    ret["hp"] = hp;
+    ret["id"] = id;
+    return ret;
+}
+

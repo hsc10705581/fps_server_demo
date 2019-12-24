@@ -24,4 +24,5 @@ public:
     void registerSender(int clientfd, int status);
     void loginSender(int clientfd, int status);
     void playerValueSender(int clientfd, json players, int count);
+    void playerActionSender(int clientfd, string action, int player_id);
 };

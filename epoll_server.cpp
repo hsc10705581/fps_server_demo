@@ -46,7 +46,7 @@ bool EpollServer::mainloop(sem_t mutex)
         return false;
     }
 
-    printf("epoll_events_count = %d\n", epoll_events_count);
+    //printf("epoll_events_count = %d\n", epoll_events_count);
     //处理这epoll_events_count个就绪事件
     for(int i = 0; i < epoll_events_count; ++i)
     {
@@ -71,22 +71,31 @@ bool EpollServer::mainloop(sem_t mutex)
             printf("Now there are %d clients int the chat room\n", (int)clients_list.size());
 
             // 服务端发送欢迎信息
-            printf("welcome message\n");
+            // printf("welcome message\n");
             char message[BUF_SIZE];
             bzero(message, BUF_SIZE);
             sprintf(message, SERVER_WELCOME, clientfd);
             //printf("send message: %s\n", message);
             //int ret = send(clientfd, message, BUF_SIZE, 0);
+            printf("send welcome message to clientfd = %d\n", clientfd);
             send(clientfd, message, BUF_SIZE, 0);
             //if(ret < 0) { perror("send error"); exit(-1); }
         }
         //客户端唤醒//处理用户发来的消息，并广播，使其他用户收到信息
         else
         {
-            printf("receiver wait lock\n");
+            //printf("receiver wait lock\n");
+            sem_wait(&mutex);
             int ret = this->receiveMessageHandler(sockfd);
-            printf("receiver release lock\n");
-            if(ret < 0) { perror("error");exit(-1); }
+            sem_post(&mutex);
+            //printf("receiver release lock\n");
+            if(ret < 0) { 
+                perror("error");
+                this->controller->clientClosed(sockfd);
+                close(sockfd);
+                clients_list.remove(sockfd); //server remove the client
+                //exit(-1); 
+            }
         }
     }
     return true;
@@ -135,7 +144,7 @@ int EpollServer::receiveMessageHandler(int clientfd)
     bzero(message, BUF_SIZE);
 
     // receive message
-    printf("read from client(clientID = %d)\n", clientfd);
+    //printf("read from client(clientID = %d)\n", clientfd);
     int len = recv(clientfd, buf, BUF_SIZE, 0);
     
 
@@ -149,8 +158,19 @@ int EpollServer::receiveMessageHandler(int clientfd)
     }
     else  //broadcast message
     {
-        json j = json::parse(buf);
-        this->controller->receiveMessage(clientfd, j);
+        try {
+            json j = json::parse(buf);
+        
+            this->controller->receiveMessage(clientfd, j);
+        }
+        catch (json::parse_error& e)
+        {
+            // output exception information
+            std::cout << "message: " << e.what() << '\n'
+                    << "exception id: " << e.id << '\n'
+                    << "byte position of error: " << e.byte << std::endl;
+        }
+        
         // list<int>::iterator it;
         // for(it = clients_list.begin(); it != clients_list.end(); ++it) {
         //    if(*it != clientfd){
@@ -160,5 +180,3 @@ int EpollServer::receiveMessageHandler(int clientfd)
     }
     return len;
 }
-
-
